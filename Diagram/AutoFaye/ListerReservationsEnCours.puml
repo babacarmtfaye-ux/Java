@@ -1,0 +1,29 @@
+@startuml ListerReservationsEnCours
+
+actor Agence as a
+
+participant ReservationController as rc
+participant ReservationService as rs
+participant ReservationRepository as rr
+participant Reservation as r
+
+a -> rc : listerReservationsEnCours()
+rc -> rs : recupererReservationsEnCours()
+
+rs -> rr : findAll()
+rr --> rs : reservations
+
+loop pour chaque réservation
+    rs -> r : estEnCours()
+    r --> rs : true / false
+end
+
+alt au moins une réservation en cours
+    rs --> rc : liste des réservations en cours
+    rc --> a : liste des réservations
+else aucune réservation en cours
+    rs --> rc : liste vide
+    rc --> a : aucune réservation en cours
+end
+
+@enduml

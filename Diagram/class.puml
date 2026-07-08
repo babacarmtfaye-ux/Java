@@ -1,0 +1,154 @@
+@startuml BabsMoney
+class Wallet{
+    -owner : String
+    -phone : String
+    -code : String
+    -balance : double
+    +getOwner() : String
+    +getPhone() : String
+    +getCode() : String
+    +getBalance() : double
+    +setBalance(balance: double) : void
+}
+
+class Merchant{
+    -name : String
+    -code : String
+    -balance : double
+    +getName() : String
+    +getCode() : String
+    +getBalance() : double
+    +setBalance(balance: double) : void
+}
+
+class Transaction{
+    -type : String
+    -from : String
+    -to : String
+    -merchant : String
+    -amount : double
+    +getType() : String
+    +getFrom() : String
+    +getTo() : String
+    +getMerchant() : String
+    +getAmount() : double
+}
+
+class WalletData {
+    +{static} wallets: Wallet[]
+    +{static} merchants: Merchant[]
+    +{static} transactions: Transaction[]
+    +{static} walletCount: int
+    +{static} merchantCount: int
+    +{static} transactionCount: int
+    +{static} MAX: int
+}
+
+class WalletService {
+    +createWallet(owener: String, phone: String, code: String, balance: double ): String
+    +deposit(phone: String, code: String, amount: double): String
+    +withdraw(phone: String, code: String, amount: double): String
+    -validWallet(owner: String, phone: String, code: String, balance: double): String
+    -hash(value: String): String
+}
+
+class ClientService {
+    -MerchantService: merchantService
+    +authenticate(phone: String, code:String): String
+    +transfer(fromPhone: String, toPhone: String amount: double): String
+    +pay(phone: String, merchantCode: String, amount: double): String
+    +getHIstory(phone: String): Transaction[]
+    -saveTransaction(type: String, from: String, to: String, merchant: String, amount: double): void
+    -hash(value: String): String
+}
+
+class MerchantService{
+    +initMerchants(): void
+    -addMerchant(name: String, code:String): void
+    +fingMerchant(code: String): void
+}
+
+class WalletUtils{
+    +{static} findWalletByPhone(phone: String): int
+    +{static} calculateFees(amount: double): double
+}
+
+class WalletValidator {
+    +{static} isValidAmount(amount: double): boolean
+    +{static} isValidName(name: String): boolean
+}
+
+abstract class BaseView {
+    #sc: Scanner
+    +showMessage(message: String): void
+    +prompt(message: String): String
+    +promptDouble(message String): double
+    +{abstract} showMenu(): int
+} 
+
+class ClientView extends BaseView {
+    +showMenu(): int
+    +showTransaction(tx: Transaction): void
+}
+
+class WalletView extends BaseView {
+    +showMenu(): int
+}
+
+class AppView extends BaseView {
+    +shoWMenu(): int
+    +getScanner(): Scanner
+}
+
+class WalletController {
+    -service: WalletService
+    -view: WalletView
+    +startApp(): void
+    -createWallet(): void
+    -deposit(): void
+    -withdraw(): void
+
+}
+
+class ClientController{
+    -service: ClientService
+    -view: ClientView
+    -currentPhone: String
+    +startApp(): void
+    -transfer(): void
+    -pay(): void
+    -showHistory(): void
+}
+
+class AppService{
+    -view: AppView
+    -walletController: WalletController
+    -clientController: ClientController
+    +start(): void
+}
+
+
+
+WalletService --> WalletData : utilise
+WalletService --> WalletUtils : utilise
+WalletService --> WalletValidator : utilise
+
+ClientService --> WalletData : utilise
+ClientService --> WalletUtils : utilise
+ClientService --> WalletValidator : utilise
+
+MerchantService --> WalletData : utilise
+
+WalletData "1" --> "0..*" Wallet : contient
+WalletData "1" --> "0..*" Merchant : contient
+WalletData "1" --> "0..*" Transaction : contient
+
+WalletController --> WalletService : utilise
+WalletController --> WalletView : utilise
+WalletController --> ClientService : utilise
+WalletController --> ClientView : utilise
+
+AppService --> WalletController : utilise
+AppService --> ClientController : utilise
+AppService --> AppView : utilise
+@enduml

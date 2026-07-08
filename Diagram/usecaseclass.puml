@@ -1,0 +1,74 @@
+@startuml BabsMoney
+
+class Client {
+    -telephone : String
+    -nom : String
+    -codeSecret : String
+
+    +sAuthentifier(code : String) : boolean
+}
+
+class Wallet {
+    -id : String
+    -solde : double
+
+    +crediter(montant : double) : void
+    +debiter(montant : double) : void
+    +consulterSolde() : double
+}
+
+class Marchand {
+    -code : String
+    -nom : String
+    -solde : double
+
+    +recevoirPaiement(montant : double) : void
+}
+
+class Transaction {
+    -id : String
+    -montant : double
+    -date : Date
+    -type : String
+
+    +enregistrer() : void
+}
+
+class Depot {
+    +verifierMontantPositif() : boolean
+}
+
+class Retrait {
+    -frais : double
+
+    +calculerFrais() : double
+    +verifierSoldeDisponible() : boolean
+}
+
+class Transfert {
+    -frais : double
+
+    +calculerFrais() : double
+    +verifierSoldeDisponible() : boolean
+    +verifierDestinataireDifferent() : boolean
+}
+
+class Paiement {
+    +verifierSoldeDisponible() : boolean
+    +verifierMarchandExiste() : boolean
+}
+
+Transaction <|-- Depot
+Transaction <|-- Retrait
+Transaction <|-- Transfert
+Transaction <|-- Paiement
+
+Client "1" *-- "1" Wallet : possède
+
+Wallet "1" o-- "0..*" Transaction : historique
+Wallet "2" o-- "0..*" Transfert : Wallet "1" o-- "0..*" Transaction : historique
+
+Paiement --> Wallet : wallet débité
+Paiement --> Marchand : marchand crédité
+
+@enduml

@@ -1,0 +1,20 @@
+@startuml HistoriqueSejours
+
+actor Client as c
+
+participant "Hotel" as h
+participant "Reservation" as res
+
+c -> h : historiqueSejours(cni)
+
+h -> res : trouverParClient(cni)
+res --> h : listeReservations
+
+loop pour chaque reservation de listeReservations
+    h -> res : getDetail()
+    res --> h : detail
+end
+
+h --> c : historique des sejours
+
+@enduml

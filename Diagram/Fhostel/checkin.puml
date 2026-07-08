@@ -1,0 +1,39 @@
+@startuml CheckIn
+
+actor Receptionniste as r
+
+participant "Hotel" as h
+participant "Chambre" as ch
+participant "Client" as cl
+participant "Reservation" as res
+
+r -> h : checkIn(numeroChambre, cni, nom,\ndateArrivee, dateDepart)
+
+h -> ch : trouverParNumero(numeroChambre)
+ch --> h : chambre
+
+opt chambre inexistante ou non disponible
+    h --> r : Erreur : chambre non disponible
+end
+
+opt dateDepart <= dateArrivee
+    h --> r : Erreur : date de départ invalide
+end
+
+h -> cl : trouverParCNI(cni)
+cl --> h : client / null
+
+opt client inexistant
+    h -> cl : new Client(cni, nom)
+    cl --> h : client
+end
+
+h -> res : new Reservation(client, chambre,\ndateArrivee, dateDepart)
+res --> h : reservation
+
+h -> ch : changerStatut("Occupée")
+ch --> h : OK
+
+h --> r : Réservation enregistrée
+
+@enduml

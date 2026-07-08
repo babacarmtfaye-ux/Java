@@ -1,0 +1,24 @@
+@startuml VoirVehiculesDisponibles
+
+actor Client as C
+participant ClientController as CC
+participant ClientService as CS
+participant Vehicule as V
+
+C -> CC : voirVehiculesDisponibles()
+CC -> CS : getVehiculesDisponibles()
+
+loop pour chaque Vehicule
+    CS -> V : estDisponible()
+    V --> CS : true/false
+end
+
+alt aucun véhicule disponible
+    CS --> CC : "Aucun véhicule disponible"
+    CC --> C : affiche message
+else véhicules trouvés
+    CS --> CC : liste des véhicules disponibles
+    CC --> C : affiche liste
+end
+
+@enduml

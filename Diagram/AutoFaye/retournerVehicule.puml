@@ -1,0 +1,46 @@
+@startuml RetournerVehicule
+
+actor Agence as a
+participant ReservationController as rc
+participant ReservationService as rs
+participant ReservationData as rd
+participant Reservation as r
+participant Vehicule as v
+
+a -> rc : retournerVehicule(reservationId)
+rc -> rs : traiterRetour(reservationId)
+
+rs -> rd : findById(reservationId)
+rd --> rs : reservation : Reservation / null
+
+alt reservation introuvable
+
+    rs --> rc : erreur réservation introuvable
+    rc --> a : message erreur
+
+else reservation trouvée
+
+    rs -> r : estEnCours()
+    r --> rs : enCours : boolean
+
+    alt reservation en cours
+
+        rs -> r : terminerReservation()
+        rs -> v : rendreDisponible()
+
+        rs -> rd : update(r)
+        rd --> rs : confirmation
+
+        rs --> rc : retour validé
+        rc --> a : véhicule retourné avec succès
+
+    else reservation déjà terminée
+
+        rs --> rc : erreur réservation déjà terminée
+        rc --> a : message erreur
+
+    end
+
+end
+
+@enduml

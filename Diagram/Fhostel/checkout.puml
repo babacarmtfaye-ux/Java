@@ -1,0 +1,40 @@
+@startuml CheckOut
+
+actor Receptionniste as r
+
+participant "Hotel" as h
+participant "Reservation" as res
+participant "Chambre" as ch
+
+r -> h : checkOut(numeroReservation, heureDepart)
+
+h -> res : trouverParId(numeroReservation)
+res --> h : reservation / null
+
+opt reservation inexistante
+    h --> r : Erreur : réservation introuvable
+end
+
+h -> ch : verifierStatut(reservation.chambre)
+ch --> h : statut
+
+opt chambre != "Occupée"
+    h --> r : Erreur : check-out impossible
+end
+
+h -> res : calculerSupplement(heureDepart)
+
+res --> h : supplement
+
+
+h -> res : cloturer()
+
+res --> h : OK
+
+h -> ch : changerStatut("En Nettoyage")
+ch --> h : OK
+
+h --> r : Facture finale (montant + supplement)
+
+
+@enduml

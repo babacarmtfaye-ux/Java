@@ -1,0 +1,38 @@
+@startuml Fhostel
+
+left to right direction
+
+actor Receptionniste as r
+actor Client as c
+
+rectangle Fhostel {
+    usecase "Ajouter une Chambre" as ucr1
+    usecase "Enregistrer une Réservation (Check-in)" as ucr2
+    usecase "Libérer une Chambre (Check-out)" as ucr3
+    usecase "Lister les Chambres occupées" as ucr4
+
+    usecase "Voir les Chambres Disponibles" as ucc1
+    usecase "Régler une Facture" as ucc2
+    usecase "Historique de mes Séjours" as ucc3
+
+    usecase "S'authentifier" as uc
+}
+
+r --> ucr1
+r --> ucr2
+r --> ucr3
+r --> ucr4
+
+c --> ucc1
+c --> ucc2
+c --> ucc3
+
+ucr1 ..> uc : include
+ucr2 ..> uc : include
+ucr3 ..> uc : include
+ucr4 ..> uc : include
+
+ucc2 ..> uc : include
+ucc3 ..> uc : include
+
+@enduml

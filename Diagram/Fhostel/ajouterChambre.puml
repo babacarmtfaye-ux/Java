@@ -1,0 +1,27 @@
+@startuml AjouterChambre
+
+actor Receptionniste as r
+
+participant "Hotel" as h
+participant "Chambre" as ch
+
+
+r -> h : ajouterChambre(numero, type, prix)
+
+h -> ch : trouverParNumero(numero)
+ch --> h : chambre/null
+
+opt numero deja existant
+    h --> r : Erreur : numero deja utilise
+end
+
+opt type ou prix invalide (prix <= 0)
+    h --> r : Erreur : donnees invalides
+end
+
+h -> ch : new Chambre(numero, type, prix)
+ch --> h : chambre creee
+
+h --> r : Chambre ajoutee
+
+@enduml

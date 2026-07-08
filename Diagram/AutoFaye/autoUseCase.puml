@@ -1,0 +1,34 @@
+@startuml AutoFaye
+left to right direction
+actor Agence as a
+actor Client as c
+
+rectangle AutoFaye{
+    usecase "Ajouter un véhicule" as UCA1
+    usecase "Enregistrer une réservation" as UCA2
+    usecase "Retourner un véhicule" as UCA3
+    usecase "Lister les réservations en cours" as UCA4
+
+    usecase "Voir les véhicules disponibles" as UCC1
+    usecase "Payer une réservation" as UCC2
+    usecase "Voir Historique" as UCC3
+
+    usecase "Se connecter" as UC
+}
+
+a --> UCA1
+a --> UCA2
+a --> UCA3
+a --> UCA4
+c --> UCC1
+c --> UCC2
+c --> UCC3
+
+
+UCC2 ..> UC : include
+UCC3 ..> UC : include
+UCA1 ..> UC : include
+UCA2 ..> UC : include
+UCA3 ..> UC : include
+UCA4 ..> UC : include
+@enduml

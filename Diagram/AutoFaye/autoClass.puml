@@ -1,0 +1,36 @@
+@startuml AutoFaye
+
+class Vehicule {
+    -id: String
+    -immatriculation: String
+    -marque: String
+    -modele: String
+    -tarif: double
+    -disponible: boolean
+}
+
+class Client {
+    -id: String
+    -nom: String
+    -prenom: String
+    -telephone: String
+    -code: String
+}
+
+class Agence {
+    -id: String
+    -nom: String
+    -code: String
+}
+
+class Reservation {
+    -id: String
+    -date: Date
+    -prix: double
+}
+
+Agence "1" *-- "0..*" Vehicule : possède
+Client "1" --> "0..*" Reservation : effectue
+Vehicule "1" --> "0..*" Reservation : concerne
+
+@enduml

@@ -1,0 +1,21 @@
+@startuml VoirChambresDisponibles
+
+actor Client as c
+
+participant "Hotel" as h
+participant "Chambre" as ch
+
+
+c -> h : voirChambresDisponibles()
+
+h -> ch : trouverToutes()
+ch --> h : listeChambres
+
+loop pour chaque chambre de listeChambres
+    h -> ch : getStatut()
+    ch --> h : statut
+end
+
+h --> c : liste des chambres disponibles 
+
+@enduml

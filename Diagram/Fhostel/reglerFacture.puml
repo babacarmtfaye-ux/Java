@@ -1,0 +1,31 @@
+@startuml ReglerFacture
+
+actor Client as c
+
+participant "Hotel" as h
+participant "Reservation" as res
+
+
+c -> h : reglerFacture(numeroReservation, montantPaye)
+
+h -> res : trouverParID(numeroReservation)
+res --> h : reservtion/null
+
+opt reservation inexistante
+    h --> c : Erreur : reservation introuvable
+end
+
+opt facture deja reglee
+    h --> c : Erreur : facture deja reglee
+end
+
+opt montantPaye < montantFacture
+    h --> c : Erreur : monatant insuffisant
+end
+
+h --> res : marquerCommeRegle()
+res --> h : OK
+
+h --> c : Facture reglee
+
+@enduml

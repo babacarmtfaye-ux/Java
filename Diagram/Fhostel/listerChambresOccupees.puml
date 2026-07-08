@@ -1,0 +1,22 @@
+@startuml ListerChambreOccupees
+
+actor Receptionniste as r
+
+participant "Hotel" as h
+participant "Chambre" as ch
+
+
+r -> h : listerChambresOccupees()
+
+h -> ch : trouverToutes()
+ch --> h : listeChambres
+
+loop pour chaque chambre de listeChambres
+    h -> ch : getStatut()
+ch --> h : statut
+
+end
+
+h --> r : liste des chambres occupees 
+
+@enduml

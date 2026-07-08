@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: autofaye-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: autofaye
+      POSTGRES_USER: autofaye
+      POSTGRES_PASSWORD: autofaye
+    volumes:
+      - ./src/main/resources/db:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

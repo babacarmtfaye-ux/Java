@@ -1,0 +1,47 @@
+@startuml EnregistrerReservation
+
+actor Agence as a
+
+participant ReservationController as rc
+participant ReservationService as rs
+participant ReservationRepo as rr
+participant VehiculeRepo as vr
+participant ClientRepo as cr
+participant Vehicule as v
+participant Reservation as r
+
+
+a -> rc : enregistrerReservation(clientId, vehiculeId, dateDebut, dateFin)
+rc -> rs : creerReservation(clientId, vehiculeId, dateDebut, dateFin)
+
+rs -> cr : findById(clientId)
+cr --> rs : client
+
+alt client introuvable
+    rs --> rc : erreur client introuvable
+    rc --> a : message erreur
+else client trouvé
+    rs -> vr : findById(vehiculeId)
+    vr --> rs : vehicule
+    alt vehicule introuvable
+        rs --> rc : erreur véhicule introuvable
+        rc --> a : message erreur
+    else vehicule trouvé
+        rs -> v : estDisponible()
+        v --> rs : disponible / non disponible
+        alt vehicule disponible
+            create r
+            rs -> r : init(client, vehicule, dateDebut, dateFin)
+            rs -> rr : save(r)
+            rr --> rs : confirmation
+            rs -> v : marquerCommeReserve()
+            rs --> rc : reservation confirmée
+            rc --> a : succès
+        else vehicule indisponible
+            rs --> rc : véhicule indisponible
+            rc --> a : message refus
+        end
+    end
+end
+
+@enduml

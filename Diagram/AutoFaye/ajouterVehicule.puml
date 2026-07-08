@@ -1,0 +1,34 @@
+@startuml AjouterVehicule
+
+actor Agence as a
+
+participant VehiculeController as vc
+participant VehiculeService as vs
+participant VehiculeData as vd
+participant Vehicule as v
+
+a -> vc : ajouterVehicule(immatriculation, marque, modele, tarif)
+vc -> vs : validerDonnees(immatriculation, marque, modele, tarif)
+vs --> vc : valide : boolean
+
+alt données valides
+
+    vc -> vs : creerVehicule(immatriculation, marque, modele, tarif)
+
+    create v
+    vs -> v : init(immatriculation, marque, modele, tarif)
+
+    vs -> vd : save(vehicule)
+    vd --> vs : vehicule : Vehicule
+
+    vs --> vc : vehicule : Vehicule
+    vc --> a : vehiculeId, message succès
+
+else données invalides
+
+    vs --> vc : erreur validation
+    vc --> a : message erreur
+
+end
+
+@enduml

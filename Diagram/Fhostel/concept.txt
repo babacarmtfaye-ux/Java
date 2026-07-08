@@ -1,0 +1,68 @@
+Diagramme UseCase
+
+Acteur : "Receptionniste", "Client" — entités externes qui utilisent le système, chacune avec ses propres droits.
+
+Système/périmètre : "rectangle Fhostel { ... }" — délimite ce qui appartient à l'application ; tout ce qui est dedans est un cas d'utilisation du système.
+
+Cas d'utilisation : ""Ajouter une Chambre"", ""S'authentifier"", etc. — chaque fonctionnalité offerte, formulée du point de vue métier.
+
+Association acteur ↔ use case : "r --> ucr1" — indique que le Réceptionniste a le droit de déclencher "Ajouter une Chambre". 
+Une simple flèche, sans notion d'obligation ou de dépendance forte.
+
+Relation include : "ucr1 ..> uc : include" — "Ajouter une Chambre" nécessite toujours de passer par "S'authentifier" avant de s'exécuter. 
+C'est une dépendance obligatoire et systématique, comme le vigile avant d'entrer en boîte.
+
+Cas sans include : "ucc1" ("Voir les Chambres Disponibles") n'a pas de flèche "include" vers "uc" — 
+ça traduit le choix métier que consulter les chambres disponibles est public, accessible sans authentification, 
+contrairement à régler une facture ou consulter son historique.
+
+
+
+
+
+Diagramme Classe
+
+Classe : Client, Chambre, Reservation, Hotel — chacune définit un type d'objet avec ses attributs propres.
+
+Attribut = État : -numero: String, -prixNuitee: double, -statut: String, etc. — les données que possède un objet à un instant donné.
+
+Visibilité private : le - devant chaque attribut — signifie que l'attribut est accessible uniquement depuis l'intérieur de la classe elle-même, 
+pas depuis l'extérieur.
+
+Multiplicité : "1" *-- "0..*" — précise combien d'instances sont liées (ex : un Hotel a zéro à plusieurs Chambres, une Chambre appartient à un seul Hotel).
+
+Composition : hotel "1" *-- "0..*" chambre — la Chambre ne peut pas exister sans son Hotel, dépendance de vie forte entre le tout et la partie.
+
+Association : client "1" -- "0..*" reservation — la Reservation référence un Client sans lien de possession ni dépendance de vie.
+
+
+
+Diagramme de Sequence
+
+Ligne de vie : participant "Hotel" as h, participant "Chambre" as ch — chaque participant a sa colonne verticale dans le temps.
+
+Message synchrone (flèche pleine ->) : r -> h : checkIn(numeroChambre, cni, nom, ...) — 
+le Réceptionniste appelle Hotel et attend la suite du traitement.
+
+Message de retour (flèche pointillée -->) : ch --> h : chambre — Chambre renvoie le résultat de la recherche à Hotel.
+
+Fragment opt (condition sans else, if seul) :
+
+opt chambre inexistante ou non disponible
+    h --> r : Erreur : chambre non disponible
+end
+Utilisé ici comme guard clause — s'exécute seulement si la condition est vraie, rien ne se passe sinon.
+
+Fragment opt imbriqué ailleurs dans le même diagramme :
+
+opt client inexistant
+    h -> cl : new Client(cni, nom)
+    cl --> h : client
+end
+
+Fragment loop (répétition, équivalent d'un for/while) :
+
+loop pour chaque chambre de listeChambres
+    h -> ch : getStatut()
+    ch --> h : statut
+end

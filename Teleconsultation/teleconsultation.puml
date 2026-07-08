@@ -1,0 +1,45 @@
+@startuml Teleconsultation
+
+class Patient {
+    -numeroSecuriteSociale: String
+    -nom: String
+    -prenom: String
+    -email: String
+    -dateNaissance: Date
+}
+
+class Medecin {
+    -numeroOrdre: String
+    -nom: String
+    -prenom: String
+    -specialite: String
+    -tarifBase: double
+}
+
+class Consultation {
+    -numero: String
+    -date: Date
+    -heureDebut: Time
+    -heureFin: Time
+    -statut: String
+    -prixDefinitif: double
+}
+
+class Paiement {
+    -idTransaction: String
+    -datePaiement: Date
+    -montantPaye: double
+    -modePaiement: String
+}
+
+class Avis {
+    -note: int
+    -commentaire: String
+}
+
+Patient "1" -- "0..*" Consultation
+Medecin "1" -- "0..*" Consultation
+Consultation "1" *-- "0..1" Paiement
+Consultation "1" *-- "0..1" Avis
+
+@enduml

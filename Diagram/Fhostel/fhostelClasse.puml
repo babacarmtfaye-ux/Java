@@ -1,0 +1,66 @@
+@startuml fhostel
+
+abstract class Utilisateur {
+    -id: String
+    -nom: String
+    -telephone: String
+    -code: String
+    +authentifier(code: String): boolean
+}
+
+class Client {
+    -numeroPiece: String
+    +historiqueSejours(): List<Reservation>
+    +trouverParCNI(cni: String): Client
+}
+
+class Receptionniste {
+}
+
+class Chambre {
+    -numero: String
+    -type: String
+    -prixNuitee: double
+    -statut: String
+    +Chambre(numero, type, prixNuitee)
+    +changerStatut(nouveauStatut: String)
+    +trouverParNumero(numero: String): Chambre
+    +trouverToutes(): List<Chambre>
+    +getStatut(): String
+}
+
+class Reservation {
+    -id: String
+    -dateArrivee: Date
+    -dateDepart: Date
+    -statut: String
+    -montantFacture: double
+    +Reservation(client, chambre, dateArrivee, dateDepart)
+    +calculerSupplement(heureDepart): double
+    +cloturer()
+    +trouverParId(id: String): Reservation
+    +trouverParClient(cni: String): List<Reservation>
+    +getDetail(): String
+    +marquerCommeReglee()
+}
+
+class Hotel {
+    -nom: String
+    -adresse: String
+    +checkIn(numeroChambre, cni, nom, dateArrivee, dateDepart)
+    +checkOut(numeroReservation, heureDepart)
+    +ajouterChambre(numero, type, prix)
+    +listerChambresOccupees()
+    +voirChambresDisponibles()
+    +reglerFacture(numeroReservation, montantPaye)
+    +historiqueSejours(cni)
+}
+
+Utilisateur <|-- Client
+Utilisateur <|-- Receptionniste
+
+Hotel "1" *-- "0..*" Chambre
+Client "1" -- "0..*" Reservation
+Chambre "1" -- "0..*" Reservation
+
+@enduml
